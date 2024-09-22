@@ -26,4 +26,6 @@ One possible problem is the lack of diodes.  I hope the keys have them inside, b
 
 Now, I used a spreadsheet as a sortable reference when building the matrix, but I labeled my row values according to the on-board pullup resister positions they're connected to, which for whatever reason, is out of sequential order on the pinout.  For simplicity, I broke each row out into its own sheet in the spreadsheet and labeled them 0-7 for consistency with the matrix in code.  I do also have a column missing 4 values, so these will be represented with \0. 
 
+Keyboard.h is no longer sufficient, also had to add KeyboardLayout.h to includes
+
 game explosion magic around noon tmrw
