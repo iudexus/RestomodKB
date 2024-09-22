@@ -17,7 +17,7 @@ Scope:
  - connect as much as possible with jumpers and pre-solder everything to existing IC1286 holder for easy hookup
  -  add code to handle special characters with shift combos
  - write a statement to capture Lalt+Lshift combo and send Lgui instead since the keyboard is so old it doesn't have a Windows key
- - unmangle numpad mappings (I wrote down the numbers, not the functions)
+ - unmangle numpad mappings (I wrote down the numbers, not the functions) [Keyboard Modifiers and Special Keys - Arduino Reference](https://www.arduino.cc/reference/en/language/functions/usb/keyboard/keyboardmodifiers/)
  - add boolean state flag variable to track num and caps lock states
  - Add minor anti-ghosting features in software like ignoring impossible key combinations or capping the number of simultaneous keypresses and test. 
  - Use for a few days and reassess anti-ghosting to implement more if needed. 
@@ -29,3 +29,18 @@ Now, I used a spreadsheet as a sortable reference when building the matrix, but 
 Keyboard.h is no longer sufficient, also had to add KeyboardLayout.h to includes
 
 game explosion magic around noon tmrw
+
+[How to emulate a keyboard or mouse with Arduino (luisllamas.es)](https://www.luisllamas.es/en/emulate-keyboard-mouse-arduino/)
+
+For testing, pin names to Teensy may not match assignments in code. See below:
+![[teensy20_card2b_rev5.png]]
+
+
+Here is the original location of the 2 replaced keys: 
+![[Screenshot 2024-09-22 000656.png]]
+
+
+
+Lorem ipsum dolor sit amet!
+
+
