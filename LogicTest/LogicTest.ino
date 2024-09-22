@@ -3,6 +3,10 @@ with the digital scanning method, only on one pin*/
 
 #include "Keyboard.h"
 
+//define row and column pins as variables for quick and easy changes
+const int rowpin = 1;
+const int colpin = 21;
+
 void setup() {
   //set up a little visual output.
   pinMode(LED_BUILTIN, OUTPUT);
@@ -10,11 +14,11 @@ void setup() {
   Keyboard.begin();
 
   //this is the'row' pin
-  pinMode(1, OUTPUT); //no need to change pin state in loop if starting as output
-  digitalWrite(1, HIGH); //rows start set to HIGH (5V)
+  pinMode(rowpin, OUTPUT); //no need to change pin state in loop if starting as output
+  digitalWrite(rowpin, HIGH); //rows start set to HIGH (5V)
 
   //this is the column pin
-  pinMode(21, INPUT_PULLUP); //columns pull up (also HIGH)
+  pinMode(colpin, INPUT_PULLUP); //columns pull up (also HIGH)
 
   //star with LED on to indicate life
   digitalWrite(LED_BUILTIN, HIGH);
@@ -22,7 +26,7 @@ void setup() {
 
 void loop() {
   //this is the 'scanning' phase
-  digitalWrite(1, LOW);
+  digitalWrite(rowpin, LOW);
 
   //this checks if column pin was pulled low with the above action
   if (digitalRead(21) == LOW) {
