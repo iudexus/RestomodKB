@@ -42,13 +42,11 @@ Here is the original location of the 2 replaced keys:
 
 Had trouble calling the keyboard library due to having serial selected in the tools > USB Type menu
 
-Fails to compile with the macros from arduino's website, but the errors are recommending replacements now.  Current macros at this time: KEY_KP_0, KEY_KP_1, KEY_KP_2, KEY_KP_3, KEY_KP_4, KEY_KP_5, KEY_KP_6, KEY_KP_7, KEY_KP_8, KEY_KP_9, KEY_KP_PLUS, KEY_KP_MINUS, KEY_KP_DOT, KEY_F1, KEY_F2, KEY_F3, KEY_F4, KEY_F5, KEY_F6, KEY_F7, KEY_F8, KEY_F9, KEY_F10, KEY_F11, KEY_F12, KEY_RETURN, KEY_BACKSPACE, KEY_TAB, KEY_PRINT_SCREEN, KEY_ESC, KEY_CAPS_LOCK, KEY_NUM_LOCK, KEY_LEFT_SHIFT, KEY_RIGHT_SHIFT, KEY_LEFT_CTRL, KEY_LEFT_ALT
-
-Updated macros to the following: 
+Fails to compile with the macros from arduino's website, but the errors are recommending replacements now.  Updated macros to the recommended format. 
 
 Had to set keymap variable type to uint16_t instead of char to hold values over 255 for hex
 
-
+Now to add some debugging, vagely by: include serial lib, init serial at 9600 baud, capture the keystroke in a variable and instead of sending it via keyboard write, sent it as serial write
 
 
 Lorem ipsum dolor sit amet!

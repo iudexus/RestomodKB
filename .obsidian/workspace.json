@@ -146,8 +146,11 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "ffdcfd2e0753da6a",
+  "active": "746dbc25cf1a9fb6",
   "lastOpenFiles": [
+    "LogicTest/KeyboardSerial.txt",
+    "LogicTest/LogicTest.ino",
+    "LogicTest",
     "Photos/ObsidianAssets",
     "Photos/ObsidianAssets/Screenshot 2024-09-22 000656.png",
     "Photos/ObsidianAssets/teensy20_card2b_rev5.png",

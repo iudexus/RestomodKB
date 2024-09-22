@@ -79,10 +79,13 @@ void setup() {
     digitalWrite(cpins[i], HIGH); //default column state is HIGH
   }
 
+  //init keyboard control
   Keyboard.begin();
 
+  //init serial console to be activated for debugging - remember to set Tools > USB Type to Serial+kb+mouse+joystk
+  //Serial.begin(9600);
   //delay to allow programming
-  delay(4000);
+  delay(8000);
 }
 
 void loop() {
@@ -96,6 +99,9 @@ void loop() {
       if (digitalRead(cpins[col]) == LOW) {
         //key pressed at row and col
         char key = keymap[row][col];
+        //DEBUGGING - uncomment below 2 lines to capture and send keystrokes via serial console
+        //Serial.print("Key pressed: ");
+        //Serial.println(key);  // Print the keystroke over serial - comment below line to stop sending via keystroke
         Keyboard.write(key);  //send to PC
         delay(100);  //debounce to avoid repeat
       }
