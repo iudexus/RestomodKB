@@ -37,7 +37,6 @@ void setup() {
   Keyboard.begin();
 
   //delay to allow programming
-  
   delay(4000);
 }
 
