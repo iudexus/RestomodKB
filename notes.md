@@ -48,6 +48,11 @@ Had to set keymap variable type to uint16_t instead of char to hold values over 
 
 Now to add some debugging, vagely by: include serial lib, init serial at 9600 baud, capture the keystroke in a variable and instead of sending it via keyboard write, sent it as serial write
 
+So the keyboard has a variety of resistances keeping pin states floating.  I seem to be able to hold the rows reliably high (best done with pull up resistors), but columns go randomly low.  I'll have to find a way to analog read the column when it falls under a certain threshold of resistance (dead short basically), then find a way to identify which row it's on. 
+
+Finally!!  I was able to get the main code working with analog signal on columns and digital on rows!  Keystrike sensing is dialed in for the letter S lol I dont know how it will be for everything else, hopefully the same parameters.  Serial console reports in the 700-960 range when open and 100-1024 when the key is depressed.  I see no reason that shouldn't be the case throughout, but with the way this thing is going, who knows. 
+
+I just need to clean up my code and document.  I have a function at the end of the main project that I need to move back to test because the arithmetic simply takes too long.  If I need to do and keysignal-cleanup-jutsu, I will, but this system seems to work pretty well at a 160ms delay.
 
 Lorem ipsum dolor sit amet!
 
