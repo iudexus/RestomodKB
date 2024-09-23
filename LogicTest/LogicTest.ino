@@ -8,6 +8,7 @@ const int rowpin = 1;
 const int colpin = A0;
 int keypress = 0;
 
+//FUNCTION smoothAnalogRead
 int smoothAnalogRead(int A0) {
   int numReadings = 16;  // Number of readings to average
   long total = 0;
