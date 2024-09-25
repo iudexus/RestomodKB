@@ -1,15 +1,16 @@
+//Jameco Electronics Keyboard Model JE1015 Restoration and Modification with Teensy 2.0 using analog matrix read
+
 #include <Keyboard.h>
 
-//define variables
+//Start setup of keyboard matrixby defining number of columns and rows
 const int numrows = 8;  //pins connected to on-board 1k pullup resistors
 const int numcols = 11; //cins connected to "coloms"/traces out to keys
 
-//define the specific pins for each operationol set
+//define the specific pins for each coordinate set
 const int rowpins[numrows] = {0,1,2,3,4,5,6,7};
 const int colpins[numcols] = {A0,A1,A2,A3,A4,A5,A6,A7,A8,A9,A10};
 
 //manually define macros as variables with decimal values
-
 /*
 #define KEY_1  225
 #define KEY_2  226
@@ -51,13 +52,9 @@ const int colpins[numcols] = {A0,A1,A2,A3,A4,A5,A6,A7,A8,A9,A10};
 #define KEY_LEFT_ALT  130
 
 #define KEY_PRINT_SCREEN  206
-*/
 
-/*set variable type to uint16_t instead of char to hold values over 255
-Collom 11 (the last one) doesnt have all 8 characters
-Representing w/ '\0' 
-Escape both \ and ' chars w/ a leading \ */
-uint16_t keymap[numrows][numcols] = {
+//Collom 11 (the last one) doesnt have all 8 characters, so representing empties w/ '\0' */
+uint16_t keymap[numrows][numcols] = { //set variable type to uint16_t instead of char to hold values over 255
   {'C', KEY_PERIOD, KEY_0, KEY_PRINTSCREEN, '\\', '.', 'M', 'B', 'Z', KEY_F7, '\0'}, //0
   {'S', KEY_F12, KEY_1, '`', ';', 'K', 'H', 'F', KEY_LEFT_ALT, KEY_TAB, KEY_F5}, //1
   {'X', KEYPAD_PLUS, KEY_5, KEY_RIGHT_SHIFT, '/', ',', 'N', 'V', KEY_CAPS_LOCK, KEY_LEFT_SHIFT, KEY_F6}, //2
@@ -69,71 +66,55 @@ uint16_t keymap[numrows][numcols] = {
 };
 
 void setup() {
-  //init keyboard control
+  //initialize keyboard control
   Keyboard.begin();
 
-  //init serial console to be activated for debugging - remember to set Tools > USB Type to Serial+kb+mouse+joystk
+  //initialize serial console to be activated for debugging - remember to set Tools > USB Type to Serial+kb+mouse+joystk
   Serial.begin(9600);
 
-  //set up rows as inputs as dry
+  //set up rows as dry inputs
   for (int i = 0; i < numrows; i++) {
     pinMode(rowpins[i], OUTPUT);
     digitalWrite(rowpins[i], LOW); //set LOW to scan later with HIGH
   }
 
-  //analog columns
-  //set up columns as outputs, and initialize them to HIGH
+  //set up analog columns as inputs
   for (int i = 0; i < numcols; i++) {
     pinMode(colpins[i], INPUT);
   }
-  //delay to allow programming
-  delay(4000);
+  //delay to not immediately jump into opperation
+  delay(2000);
 }
 
 void loop() {
   
   for (int row = 0; row < numrows; row++) {
-    //pull rowpin LOW to scan row
+    //set rowpin HIGH to apply voltage and scan row
     digitalWrite(rowpins[row], HIGH);
 
     //read the state of each column
     for (int col = 0; col < numcols; col++) {
       
-      //capture active column
-      //char keystroke = analogRead(colpins[col]);
-      //if (keystroke >= 1000) {
-        //verify active column
-        if (analogRead(colpins[col]) >= 1002) { //can as smooth analog read here  to help debounce and input verification
-        
-        //key pressed at row and col
-        char key = keymap[row][col]; //variable type set to uint16_t to hold macros - treat as char
-    
-        //DEBUGGING - uncomment below 2 lines to capture and send keystrokes via serial console
-        Serial.print("Key pressed: ");
-        Serial.println(key);  // Print the keystroke over serial - comment below line to stop sending via keystroke
-        Serial.print("row: ");
-        Serial.println(row);  // Print the keystroke over serial - comment below line to stop sending via keystroke
-        Serial.print("col: ");
-        Serial.println(col);  // Print the keystroke over serial - comment below line to stop sending via keystroke
+      //capture active column (analog)
+      if (analogRead(colpins[col]) >= 1002) { //can as smooth analog read here  to help debounce and input verification
+      
+      //correspond where key is pressed at row and col
+      char key = keymap[row][col]; //variable type set to uint16_t to hold macros - treat as char
 
-        Keyboard.write(key);  //send to PC
-        
-        delay(170);  //debounce to avoid repeat
-        }
-      //}
+      //DEBUGGING - uncomment below 2 lines to capture and send keystrokes via serial console
+      Serial.print("Key pressed: ");
+      Serial.println(key);  // Print the keystroke over serial - comment below line to stop sending via keystroke
+      Serial.print("row: ");
+      Serial.println(row);  // Print the keystroke over serial - comment below line to stop sending via keystroke
+      Serial.print("col: ");
+      Serial.println(col);  // Print the keystroke over serial - comment below line to stop sending via keystroke
+
+      Keyboard.write(key);  //send keypress to PC
+      
+      delay(170);  //debounce to avoid repeat
+      }
     }
-        // Set the row back to LOW after scanning
+        //set row back to LOW after scanning to not re-read
     digitalWrite(rowpins[row], LOW);
   }
-}
-//FUNCTION smoothAnalogRead
-int smoothAnalogRead(int currentpin) {
-  int numReadings = 2;  //num readings to average - higher is more accurate
-  long total = 0;
-
-  for (int i = 0; i < numReadings; i++) {
-    total += analogRead(currentpin);  //sum the readings
-    delay(1);  //small delay between readings for better accuracy
-  }
-  return total / numReadings;  //return the average reading
 }
