@@ -54,6 +54,22 @@ Finally!!  I was able to get the main code working with analog signal on columns
 
 I just need to clean up my code and document.  I have a function at the end of the main project that I need to move back to test because the arithmetic simply takes too long.  If I need to do and keysignal-cleanup-jutsu, I will, but this system seems to work pretty well at a 160ms delay.
 
+Next steps SOLDERING:
+- need to retest kb function with switch in the xt position.
+- Identify whether circuit is possible for trace re-use since voltage was always applied to LED circuit - one possible fix here is to simply hardwire in place of the resistors and wire to gnd, then place resistors on the jumpers in for each LED and reverse polarity
+- remove jumper for voltage line in from PC header next to switch and retest
+- Add momentary cap replacing jumper in SCRLK line to switch
+- remove extra/extraneous hardware - or not. At least disconnect logic diode D1. 
+
+Next steps PROGRAMMING:
+ - Identify which variables types need to be matching if any to handle shift case
+ - identify how to handle shift case since letters are all being sent as capitals
+	 - Perhaps duplicate matrix with caps only, flag shift case, and set kb to never pass a null character, which I already need to do
+- set kb to never pass a null variable. 
+- Create caps case and numlk case and add similar filtering to above
+- perhaps optimize normal keystrokes by detecting global special case bool - I dont type that fast on the numpad for the extra processing time to matter for checking all cases, but I might in normal typeing (the break character will be useful to check spcl case bool flag, then exit on FALSE)
+- As above, I need to figure out the macros for the normal functioning numpad map and update the matrix.  I think it's best to create a "special case matrix" variable that coordinates can be passed into on spcl case conditions
+
 Lorem ipsum dolor sit amet!
 
 
