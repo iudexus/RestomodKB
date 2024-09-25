@@ -61,6 +61,8 @@ Next steps SOLDERING:
 - Add momentary cap replacing jumper in SCRLK line to switch
 - remove extra/extraneous hardware - or not. At least disconnect logic diode D1. 
 
+Hybrid note: the LEDs are set up for control via voltage sinking on a shared power rail.  Supply 5v to the rail and use 2 pins to sink for CPS and NUM.  look into how reset could be shorted on at/tx switching using momentary circuit still to allow light to light on at setting.  - there must be some old logic circuit here to use, probably out to USB header --there are 2 pins in IC header connecting directly to switch outputs like I suspected.  Must be TX and RX.  WHerever that lands, I can install my reset circuit and 50% chance it'll work with the scrlk light
+
 Next steps PROGRAMMING:
  - Identify which variables types need to be matching if any to handle shift case
  - identify how to handle shift case since letters are all being sent as capitals
@@ -69,6 +71,7 @@ Next steps PROGRAMMING:
 - Create caps case and numlk case and add similar filtering to above
 - perhaps optimize normal keystrokes by detecting global special case bool - I dont type that fast on the numpad for the extra processing time to matter for checking all cases, but I might in normal typeing (the break character will be useful to check spcl case bool flag, then exit on FALSE)
 - As above, I need to figure out the macros for the normal functioning numpad map and update the matrix.  I think it's best to create a "special case matrix" variable that coordinates can be passed into on spcl case conditions
+	- check here for current definitions of macros [Keyboard/src/Keyboard.h at master · arduino-libraries/Keyboard (github.com)](https://github.com/arduino-libraries/Keyboard/blob/master/src/Keyboard.h) and here for decimal values [Keyboard Modifiers and Special Keys - Arduino Reference](https://www.arduino.cc/reference/en/language/functions/usb/keyboard/keyboardmodifiers/)
 
 Lorem ipsum dolor sit amet!
 
