@@ -10,8 +10,10 @@ const int numcols = 11; //cins connected to "coloms"/traces out to keys
 const int rowpins[numrows] = {0,1,2,3,4,5,6,7};
 const int colpins[numcols] = {A0,A1,A2,A3,A4,A5,A6,A7,A8,A9,A10};
 
-//manually define macros as variables with decimal values
 /*
+
+//manually define macros as variables with decimal values
+
 #define KEY_1  225
 #define KEY_2  226
 #define KEY_3  227
@@ -26,6 +28,17 @@ const int colpins[numcols] = {A0,A1,A2,A3,A4,A5,A6,A7,A8,A9,A10};
 #define KEYPAD_MINUS  222
 #define KEY_PERIOD  235
 #define KEY_NUM_LOCK  219
+#define KEY_KP_ASTERISK  221
+#define KEY_PAGE_UP  211
+#define KEY_PAGE_DOWN  214
+#define KEY_DELETE  212
+#define KEY_INSERT  209
+#define KEY_END  213
+#define KEY_HOME  210
+#define KEY_UP_ARROW  218
+#define KEY_DOWN_ARROW  217
+#define KEY_LEFT_ARROW  216
+#define KEY_RIGHT_ARROW  215
 
 #define KEY_ESC  177
 #define KEY_F1  194
@@ -53,7 +66,9 @@ const int colpins[numcols] = {A0,A1,A2,A3,A4,A5,A6,A7,A8,A9,A10};
 
 #define KEY_PRINT_SCREEN  206
 
-//Collom 11 (the last one) doesnt have all 8 characters, so representing empties w/ '\0' */
+*/
+
+//Collom 11 (the last one) doesnt have all 8 characters, so representing empties w/ '\0' --normal state no caps numlk ON
 uint16_t keymap[numrows][numcols] = { //set variable type to uint16_t instead of char to hold values over 255
   {'c', KEY_PERIOD, KEY_0, KEY_PRINTSCREEN, '\\', '.', 'm', 'b', 'z', KEY_F7, '\0'}, //0
   {'s', KEY_F12, KEY_1, '`', ';', 'k', 'h', 'f', KEY_LEFT_ALT, KEY_TAB, KEY_F5}, //1
@@ -65,15 +80,15 @@ uint16_t keymap[numrows][numcols] = { //set variable type to uint16_t instead of
   {'3', KEYPAD_MINUS, KEY_8, KEY_BACKSPACE, '-', '9', '7', '5', '1', KEY_F2, '\0'} //7
 };
 
-uint16_t specialkeymap[numrows][numcols] = { //set variable type to uint16_t instead of char to hold values over 255
-  {'C', KEY_PERIOD, KEY_0, KEY_PRINTSCREEN, '\\', '.', 'M', 'B', 'Z', KEY_F7, '\0'}, //0
-  {'S', KEY_F12, KEY_1, '`', ';', 'K', 'H', 'F', KEY_LEFT_ALT, KEY_TAB, KEY_F5}, //1
+uint16_t specialkeymap[numrows][numcols] = { //createing a special case matrix to handle shift, capslk, and numlk OFF
+  {'C', KEY_DELETE, KEY_INSERT, KEY_KP_ASTERISK, '\\', '.', 'M', 'B', 'Z', KEY_F7, '\0'}, //0
+  {'S', KEY_F12, KEY_END, '`', ';', 'K', 'H', 'F', KEY_LEFT_ALT, KEY_TAB, KEY_F5}, //1
   {'X', KEYPAD_PLUS, KEY_5, KEY_RIGHT_SHIFT, '/', ',', 'N', 'V', KEY_CAPS_LOCK, KEY_LEFT_SHIFT, KEY_F6}, //2
-  {'D', KEY_3, KEY_2, KEY_RETURN, '\'', 'L', 'J', 'G', KEY_F10, 'A', KEY_F8}, //3
+  {'D', KEY_PAGE_DOWN, KEY_DOWN_ARROW, KEY_RETURN, '\'', 'L', 'J', 'G', KEY_F10, 'A', KEY_F8}, //3
   {'2', KEY_F11, KEY_NUM_LOCK, '=', '0', '8', '6', '4', KEY_F9, KEY_ESC, KEY_F1}, //4
-  {'W', KEY_9, KEY_7, ']', 'P', 'I', 'Y', 'R', KEY_LEFT_CTRL, KEY_F3, '\0'}, //5
-  {'E', KEY_6, KEY_4, ' ', '[', 'O', 'U', 'T', 'Q', KEY_F4, '\0'}, //6
-  {'3', KEYPAD_MINUS, KEY_8, KEY_BACKSPACE, '-', '9', '7', '5', '1', KEY_F2, '\0'} //7
+  {'W', KEY_PAGE_UP, KEY_HOME, ']', 'P', 'I', 'Y', 'R', KEY_LEFT_CTRL, KEY_F3, '\0'}, //5
+  {'E', KEY_RIGHT_ARROW, KEY_LEFT_ARROW, ' ', '[', 'O', 'U', 'T', 'Q', KEY_F4, '\0'}, //6
+  {'3', KEYPAD_MINUS, KEY_UP_ARROW, KEY_BACKSPACE, '-', '9', '7', '5', '1', KEY_F2, '\0'} //7
 };
 
 //define special cases as boolean flags
