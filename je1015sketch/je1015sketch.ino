@@ -81,20 +81,21 @@ uint16_t keymap[numrows][numcols] = { //set variable type to uint16_t instead of
 };
 
 uint16_t specialkeymap[numrows][numcols] = { //createing a special case matrix to handle shift, capslk, and numlk OFF
-  {'C', KEY_DELETE, KEY_INSERT, KEY_KP_ASTERISK, '\\', '.', 'M', 'B', 'Z', KEY_F7, '\0'}, //0
-  {'S', KEY_F12, KEY_END, '`', ';', 'K', 'H', 'F', KEY_LEFT_ALT, KEY_TAB, KEY_F5}, //1
-  {'X', KEYPAD_PLUS, KEY_5, KEY_RIGHT_SHIFT, '/', ',', 'N', 'V', KEY_CAPS_LOCK, KEY_LEFT_SHIFT, KEY_F6}, //2
-  {'D', KEY_PAGE_DOWN, KEY_DOWN_ARROW, KEY_RETURN, '\'', 'L', 'J', 'G', KEY_F10, 'A', KEY_F8}, //3
-  {'2', KEY_F11, KEY_NUM_LOCK, '=', '0', '8', '6', '4', KEY_F9, KEY_ESC, KEY_F1}, //4
-  {'W', KEY_PAGE_UP, KEY_HOME, ']', 'P', 'I', 'Y', 'R', KEY_LEFT_CTRL, KEY_F3, '\0'}, //5
-  {'E', KEY_RIGHT_ARROW, KEY_LEFT_ARROW, ' ', '[', 'O', 'U', 'T', 'Q', KEY_F4, '\0'}, //6
-  {'3', KEYPAD_MINUS, KEY_UP_ARROW, KEY_BACKSPACE, '-', '9', '7', '5', '1', KEY_F2, '\0'} //7
+  {'C', KEY_DELETE, KEY_INSERT, KEY_KP_ASTERISK, '|', '>', 'M', 'B', 'Z', KEY_F7, '\0'}, //0
+  {'S', KEY_F12, KEY_END, '~', ':', 'K', 'H', 'F', KEY_LEFT_ALT, KEY_TAB, KEY_F5}, //1
+  {'X', KEYPAD_PLUS, KEY_5, KEY_RIGHT_SHIFT, '?', '<', 'N', 'V', KEY_CAPS_LOCK, KEY_LEFT_SHIFT, KEY_F6}, //2
+  {'D', KEY_PAGE_DOWN, KEY_DOWN_ARROW, KEY_RETURN, '"', 'L', 'J', 'G', KEY_F10, 'A', KEY_F8}, //3
+  {'@', KEY_F11, KEY_NUM_LOCK, '+', ')', '*', '^', '$', KEY_F9, KEY_ESC, KEY_F1}, //4
+  {'W', KEY_PAGE_UP, KEY_HOME, '}', 'P', 'I', 'Y', 'R', KEY_LEFT_CTRL, KEY_F3, '\0'}, //5
+  {'E', KEY_RIGHT_ARROW, KEY_LEFT_ARROW, ' ', '{', 'O', 'U', 'T', 'Q', KEY_F4, '\0'}, //6
+  {'#', KEYPAD_MINUS, KEY_UP_ARROW, KEY_BACKSPACE, '_', '(', '&', '%', '!', KEY_F2, '\0'} //7
 };
 
 //define special cases as boolean flags
-bool shift = FALSE;
-bool capslock= FALSE;
-bool numlock = TRUE;
+bool shift = false;
+bool capslock= false;
+bool numlock = true;
+bool special = false;
 
 void setup() {
   //initialize keyboard control
@@ -127,21 +128,22 @@ void loop() {
     for (int col = 0; col < numcols; col++) {
       
       //capture active column (analog)
-      if (analogRead(colpins[col]) >= 1002) { //can as smooth analog read here  to help debounce and input verification
-      
-      //correspond where key is pressed at row and col
-      char key = keymap[row][col]; //variable type set to uint16_t to hold macros - treat as char
-
-      //DEBUGGING - uncomment below 2 lines to capture and send keystrokes via serial console
+      if (analogRead(colpins[col]) >= 1002) { 
+        
+        //correspond where key is pressed at row and col
+        uint16_t key = keymap[row][col]; //variable type set to uint16_t to hold macros - treat as char
+          if (key == KEY_RIGHT_SHIFT || key == KEY_LEFT_SHIFT) {special = !special} //change state of special with shift case to uncap capslock
+          else if 
+      //DEBUGGING - uncomment below lines to capture and send keystrokes via serial console
       Serial.print("Key pressed: ");
       Serial.println(key);  // Print the keystroke over serial - comment below line to stop sending via keystroke
       Serial.print("row: ");
       Serial.println(row);  // Print the keystroke over serial - comment below line to stop sending via keystroke
       Serial.print("col: ");
       Serial.println(col);  // Print the keystroke over serial - comment below line to stop sending via keystroke
-
-      Keyboard.write(key);  //send keypress to PC
-      
+        if (key!= /0) { //check for null character
+        Keyboard.write(key);  //send keypress to PC
+        }
       delay(170);  //debounce to avoid repeat
       }
     }
