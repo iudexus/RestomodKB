@@ -10,6 +10,8 @@ const int numcols = 11; //cins connected to "coloms"/traces out to keys
 const int rowpins[numrows] = {0,1,2,3,4,5,6,7};
 const int colpins[numcols] = {A0,A1,A2,A3,A4,A5,A6,A7,A8,A9,A10};
 
+//this array lists the states of the keyboard given current shift/caps/numlock combo correlated to below matrices. 
+const int states[] = {0,1,2,3,4,5,6,7};
 /*
 
 //manually define macros as variables with decimal values
@@ -80,8 +82,8 @@ uint16_t keymap[numrows][numcols] = { //set variable type to uint16_t instead of
   {'3', KEYPAD_MINUS, KEY_8, KEY_BACKSPACE, '-', '9', '7', '5', '1', KEY_F2, '\0'} //7
 };
 
-uint16_t specialkeymap[numrows][numcols] = { //createing a special case matrix to handle shift, capslk, and numlk OFF
-  {'C', KEY_DELETE, KEY_INSERT, KEY_KP_ASTERISK, '|', '>', 'M', 'B', 'Z', KEY_F7, '\0'}, //0
+uint16_t shiftkeymap[numrows][numcols] = { //createing a special case matrix to handle shift, capslk, and numlk OFF
+  {'C', KEY_DELETE, KEY_INSERT, KEYPAD_ASTERIX, '|', '>', 'M', 'B', 'Z', KEY_F7, '\0'}, //0
   {'S', KEY_F12, KEY_END, '~', ':', 'K', 'H', 'F', KEY_LEFT_ALT, KEY_TAB, KEY_F5}, //1
   {'X', KEYPAD_PLUS, KEY_5, KEY_RIGHT_SHIFT, '?', '<', 'N', 'V', KEY_CAPS_LOCK, KEY_LEFT_SHIFT, KEY_F6}, //2
   {'D', KEY_PAGE_DOWN, KEY_DOWN_ARROW, KEY_RETURN, '"', 'L', 'J', 'G', KEY_F10, 'A', KEY_F8}, //3
@@ -91,11 +93,16 @@ uint16_t specialkeymap[numrows][numcols] = { //createing a special case matrix t
   {'#', KEYPAD_MINUS, KEY_UP_ARROW, KEY_BACKSPACE, '_', '(', '&', '%', '!', KEY_F2, '\0'} //7
 };
 
-//define special cases as boolean flags
-bool shift = false;
-bool capslock= false;
-bool numlock = true;
-bool special = false;
+uint16_t capskeymap[numrows][numcols] = { //set variable type to uint16_t instead of char to hold values over 255
+  {'c', KEY_PERIOD, KEY_0, KEY_PRINTSCREEN, '\\', '.', 'm', 'b', 'z', KEY_F7, '\0'}, //0
+  {'s', KEY_F12, KEY_1, '`', ';', 'k', 'h', 'f', KEY_LEFT_ALT, KEY_TAB, KEY_F5}, //1
+  {'x', KEYPAD_PLUS, KEY_5, KEY_RIGHT_SHIFT, '/', ',', 'n', 'v', KEY_CAPS_LOCK, KEY_LEFT_SHIFT, KEY_F6}, //2
+  {'d', KEY_3, KEY_2, KEY_RETURN, '\'', 'l', 'j', 'g', KEY_F10, 'a', KEY_F8}, //3
+  {'2', KEY_F11, KEY_NUM_LOCK, '=', '0', '8', '6', '4', KEY_F9, KEY_ESC, KEY_F1}, //4
+  {'w', KEY_9, KEY_7, ']', 'p', 'i', 'y', 'r', KEY_LEFT_CTRL, KEY_F3, '\0'}, //5
+  {'e', KEY_6, KEY_4, ' ', '[', 'o', 'u', 't', 'q', KEY_F4, '\0'}, //6
+  {'3', KEYPAD_MINUS, KEY_8, KEY_BACKSPACE, '-', '9', '7', '5', '1', KEY_F2, '\0'} //7
+};
 
 void setup() {
   //initialize keyboard control
@@ -119,7 +126,13 @@ void setup() {
 }
 
 void loop() {
-  
+
+//define special cases as boolean flags
+static bool shift = false;
+static bool capslock= false;
+static bool numlock = true;
+
+//begin scanning keys
   for (int row = 0; row < numrows; row++) {
     //set rowpin HIGH to apply voltage and scan row
     digitalWrite(rowpins[row], HIGH);
@@ -132,8 +145,32 @@ void loop() {
         
         //correspond where key is pressed at row and col
         uint16_t key = keymap[row][col]; //variable type set to uint16_t to hold macros - treat as char
-          if (key == KEY_RIGHT_SHIFT || key == KEY_LEFT_SHIFT) {special = !special} //change state of special with shift case to uncap capslock
-          else if 
+
+        //shift case
+          if (key == KEY_RIGHT_SHIFT || key == KEY_LEFT_SHIFT) { //change state of shift to uncap capslock
+            shift = true;
+            while (shift == true) {
+              if (analogRead(colpins[col]) >= 1002 && (analogRead(colpins[col]) != key) {  //this may cause issues
+              uint16_t shiftkey = key //capture the specific shift key
+              key = shiftkeymap[row][col] //read a new coordinate
+                if (key != '/0') { //check for null character
+                Keyboard.press(shiftkey);
+                Keyboard.press(key);  //send keypress to PC
+                Kayboard.releaseAll()
+                delay(160);  //debounce to avoid repeat
+                shift = false; //reset shift to recheck state
+                return; //start from the top
+//the above loop needs work to add 3 key combo functionality
+                }
+              }
+            }
+          } 
+          else if (key == KEY_CAPS_LOCK) { //check for capslk 
+            capslock = !capslock; //cycle capslock
+            while (capslock == true){
+              do stuff
+            }
+          } //change state of capslk
       //DEBUGGING - uncomment below lines to capture and send keystrokes via serial console
       Serial.print("Key pressed: ");
       Serial.println(key);  // Print the keystroke over serial - comment below line to stop sending via keystroke
@@ -141,7 +178,8 @@ void loop() {
       Serial.println(row);  // Print the keystroke over serial - comment below line to stop sending via keystroke
       Serial.print("col: ");
       Serial.println(col);  // Print the keystroke over serial - comment below line to stop sending via keystroke
-        if (key!= /0) { //check for null character
+//add ctl + alt + del dedicated cap and send here
+        if (key != '/0') { //check for null character
         Keyboard.write(key);  //send keypress to PC
         }
       delay(170);  //debounce to avoid repeat
@@ -151,3 +189,15 @@ void loop() {
     digitalWrite(rowpins[row], LOW);
   }
 }
+
+/*Create shift here as a function
+setup in loop: read keypress, if shiftmap active, check keypress for shift, if shift, call this funct, else set shift false
+
+in active map
+set active map based on caps
+keypress send to PC
+if statement checking for possible combo with the second key 
+read and press 3rd key, then release all
+depounce wait 160
+return;*/
+/*create caps/numlk state changer here

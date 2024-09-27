@@ -75,4 +75,7 @@ Next steps PROGRAMMING:
 
 Lorem ipsum dolor sit amet!
 
+changing direction of the shift/caps/numlk handling: instead of handling this in nested, dependent if statements and while loops, I've created an array to map the state of the kayboard to the appropriate matrix.  This way the loop will be far smaller, cleaner, and faster. 
 
+helpful reference.  Use goto to skip checking if no change to active matrix!! 
+cache the last used matrix in a static variable and have a single checking if statement that calls the state changer as a function: "activeMatrixUpdater" which can switch the matrix
