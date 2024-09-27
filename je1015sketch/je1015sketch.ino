@@ -11,7 +11,16 @@ const int rowpins[numrows] = {0,1,2,3,4,5,6,7};
 const int colpins[numcols] = {A0,A1,A2,A3,A4,A5,A6,A7,A8,A9,A10};
 
 //this array lists the states of the keyboard given current shift/caps/numlock combo correlated to below matrices. 
-const int states[] = {0,1,2,3,4,5,6,7};
+const char matrices[8] = {
+  numlk, //0: numlock state only
+  numshift, //1: numlk + shift
+  numcaps //2: num + capslk
+  numcapsshift //3: all states
+  nostate //4: no special state defined
+  nonumshift //5: numlk off shift pressed
+  nonumcaps //6: numlk off caps on
+  nonumcaps shift //7 numlk off caps active shift pressed
+};
 /*
 
 //manually define macros as variables with decimal values
@@ -104,6 +113,10 @@ uint16_t capskeymap[numrows][numcols] = { //set variable type to uint16_t instea
   {'3', KEYPAD_MINUS, KEY_8, KEY_BACKSPACE, '-', '9', '7', '5', '1', KEY_F2, '\0'} //7
 };
 
+//define special cases as boolean flags
+static bool capslk= false;
+static bool numlk = true;
+
 void setup() {
   //initialize keyboard control
   Keyboard.begin();
@@ -127,10 +140,8 @@ void setup() {
 
 void loop() {
 
-//define special cases as boolean flags
+//set static keys states for combo cases
 static bool shift = false;
-static bool capslock= false;
-static bool numlock = true;
 
 //begin scanning keys
   for (int row = 0; row < numrows; row++) {
@@ -189,6 +200,15 @@ static bool numlock = true;
     digitalWrite(rowpins[row], LOW);
   }
 }
+void getActiveMatrix(uint16_t spclKey) {
+  if (spclKey == KEY_CAPS_LOCK) {
+    capslk = !capslk;
+  else if (spclKey == KEY_NUM_LOCK)
+    numlk = !numlk;
+    //bitwise if possible and return active matrix
+  }
+}
+
 
 /*Create shift here as a function
 setup in loop: read keypress, if shiftmap active, check keypress for shift, if shift, call this funct, else set shift false
