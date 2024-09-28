@@ -79,3 +79,7 @@ changing direction of the shift/caps/numlk handling: instead of handling this in
 
 helpful reference.  Use goto to skip checking if no change to active matrix!! 
 cache the last used matrix in a static variable and have a single checking if statement that calls the state changer as a function: "activeMatrixUpdater" which can switch the matrix
+
+Here's an Idea!  Since I dont have a windows key, have ALT+shift = r_gui, then have a timer where the scrlk key blinks a few seconds awaiting key combo else sends r_gui keypress
+
+The next big things are the above key combo handler, LED logic with voltage sinking (1 pin pullup, 3 pins high), and actually writing out the key matrices since that'll be time consuming.  Then wiring! 

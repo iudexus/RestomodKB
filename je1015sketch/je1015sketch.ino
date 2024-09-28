@@ -7,20 +7,29 @@ const int numrows = 8;  //pins connected to on-board 1k pullup resistors
 const int numcols = 11; //cins connected to "coloms"/traces out to keys
 
 //define the specific pins for each coordinate set
-const int rowpins[numrows] = {0,1,2,3,4,5,6,7};
+const int rowpins[numrows] = {1,2,3,4,5,6,7,8};
 const int colpins[numcols] = {A0,A1,A2,A3,A4,A5,A6,A7,A8,A9,A10};
 
-//this array lists the states of the keyboard given current shift/caps/numlock combo correlated to below matrices. 
-const char matrices[8] = {
-  numlk, //0: numlock state only
-  numshift, //1: numlk + shift
-  numcaps //2: num + capslk
-  numcapsshift //3: all states
-  nostate //4: no special state defined
-  nonumshift //5: numlk off shift pressed
-  nonumcaps //6: numlk off caps on
-  nonumcaps shift //7 numlk off caps active shift pressed
+//define bitwise indicators for selecting active keymap for typing - note to self: |=, or, turns on through addition : &= ~, and not, turns off by specifying : ^=, xor, toggles with exclusion
+#define numlk 0x01 //bit 0
+#define shift 0x02 //bit 1
+#define caps 0x04 //bit 2
+
+//this modifier's state will index which of the following keymaps to get
+byte activeMatrix = 1;  //numlock on by default
+
+//this array lists the states of the keyboard given current modifier in order to read from state bit. 
+const char (*matrices[8])[numcols] = {
+  noState, //0: no state, 0 bit
+  numlkDefault, //1: numlk active, 1 bit
+  justShift, //2: shift active, 2 bit
+  numShift, //3: num + shift, 1 + 2 bit
+  justCap, //4: caps active, 4 bit
+  numCap, //5: num + caps, 1 + 4 bit
+  CapShift, //6: caps + shift, 2 + 5 bit
+  numCapShift, //7: all states, all bits
 };
+
 /*
 
 //manually define macros as variables with decimal values
@@ -113,10 +122,6 @@ uint16_t capskeymap[numrows][numcols] = { //set variable type to uint16_t instea
   {'3', KEYPAD_MINUS, KEY_8, KEY_BACKSPACE, '-', '9', '7', '5', '1', KEY_F2, '\0'} //7
 };
 
-//define special cases as boolean flags
-static bool capslk= false;
-static bool numlk = true;
-
 void setup() {
   //initialize keyboard control
   Keyboard.begin();
@@ -140,9 +145,6 @@ void setup() {
 
 void loop() {
 
-//set static keys states for combo cases
-static bool shift = false;
-
 //begin scanning keys
   for (int row = 0; row < numrows; row++) {
     //set rowpin HIGH to apply voltage and scan row
@@ -154,70 +156,33 @@ static bool shift = false;
       //capture active column (analog)
       if (analogRead(colpins[col]) >= 1002) { 
         
-        //correspond where key is pressed at row and col
-        uint16_t key = keymap[row][col]; //variable type set to uint16_t to hold macros - treat as char
-
-        //shift case
-          if (key == KEY_RIGHT_SHIFT || key == KEY_LEFT_SHIFT) { //change state of shift to uncap capslock
-            shift = true;
-            while (shift == true) {
-              if (analogRead(colpins[col]) >= 1002 && (analogRead(colpins[col]) != key) {  //this may cause issues
-              uint16_t shiftkey = key //capture the specific shift key
-              key = shiftkeymap[row][col] //read a new coordinate
-                if (key != '/0') { //check for null character
-                Keyboard.press(shiftkey);
-                Keyboard.press(key);  //send keypress to PC
-                Kayboard.releaseAll()
-                delay(160);  //debounce to avoid repeat
-                shift = false; //reset shift to recheck state
-                return; //start from the top
-//the above loop needs work to add 3 key combo functionality
-                }
-              }
-            }
-          } 
-          else if (key == KEY_CAPS_LOCK) { //check for capslk 
-            capslock = !capslock; //cycle capslock
-            while (capslock == true){
-              do stuff
-            }
-          } //change state of capslk
-      //DEBUGGING - uncomment below lines to capture and send keystrokes via serial console
-      Serial.print("Key pressed: ");
-      Serial.println(key);  // Print the keystroke over serial - comment below line to stop sending via keystroke
-      Serial.print("row: ");
-      Serial.println(row);  // Print the keystroke over serial - comment below line to stop sending via keystroke
-      Serial.print("col: ");
-      Serial.println(col);  // Print the keystroke over serial - comment below line to stop sending via keystroke
-//add ctl + alt + del dedicated cap and send here
-        if (key != '/0') { //check for null character
-        Keyboard.write(key);  //send keypress to PC
+        //correspond where key is pressed at row and col in the active matrix
+        uint16_t key = matrices[activeMatrix][row][col]; //variable type set to uint16_t to hold macros - treat as char
+        if (key == KEY_NUM_LOCK || key == KEY_CAPS_LOCK) {
+          numCapsChanger(key); //pass in modifier key to the function
         }
-      delay(170);  //debounce to avoid repeat
+        else if (key == KEY_LEFT_SHIFT || key == KEY_RIGHT_SHIFT) {
+          siftHandler(col, key); //pass in the active shift pin to listen for release
+        }
+        else if (key == KEY_LEFT_ALT || key == KEY_LEFT_CTRL) {
+          comboHandler(key) //pass in the combo trigger to start combo cycle
+        }
+        else if (key != '/0') { //check for null character
+          Keyboard.write(key);  //send keypress to PC
+        }
+        digitalWrite(rowpins[row], LOW); //clean up immediately after sending data
+
+        //DEBUGGING - uncomment below lines to capture and send keystrokes via serial console
+        Serial.print("Key pressed: ");
+        Serial.println(key);  // Print the keystroke over serial - comment below line to stop sending via keystroke
+        Serial.print("row: ");
+        Serial.println(row);  // Print the keystroke over serial - comment below line to stop sending via keystroke
+        Serial.print("col: ");
+        Serial.println(col);  // Print the keystroke over serial - comment below line to stop sending via keystroke
+        
+        delay(170);  //debounce to avoid repeat kaystroke
       }
     }
-        //set row back to LOW after scanning to not re-read
-    digitalWrite(rowpins[row], LOW);
   }
 }
-void getActiveMatrix(uint16_t spclKey) {
-  if (spclKey == KEY_CAPS_LOCK) {
-    capslk = !capslk;
-  else if (spclKey == KEY_NUM_LOCK)
-    numlk = !numlk;
-    //bitwise if possible and return active matrix
-  }
-}
-
-
-/*Create shift here as a function
-setup in loop: read keypress, if shiftmap active, check keypress for shift, if shift, call this funct, else set shift false
-
-in active map
-set active map based on caps
-keypress send to PC
-if statement checking for possible combo with the second key 
-read and press 3rd key, then release all
-depounce wait 160
-return;*/
-/*create caps/numlk state changer here
+// Add LED handling here!!! 
