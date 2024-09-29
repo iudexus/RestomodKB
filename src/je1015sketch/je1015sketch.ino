@@ -12,8 +12,9 @@ const int colpins[numcols] = {A0,A1,A2,A3,A4,A5,A6,A7,A8,A9,A10};
 
 //define bitwise indicators for selecting active keymap for typing - note to self: |=, or, turns on through addition : &= ~, and not, turns off by specifying : ^=, xor, toggles with exclusion
 #define numlk 0x01 //bit 0
-#define shift 0x02 //bit 1
-#define caps 0x04 //bit 2
+#define caps 0x02 //bit 1
+#define shift 0x04 //bit 2
+//shift nolonger defines this bit, instead allowing the computer to handle shift cases to make capslk interaction easier - 2am revelation
 
 //this modifier's state will index which of the following keymaps to get
 byte activeMatrix = 1;  //numlock on by default
@@ -22,11 +23,11 @@ byte activeMatrix = 1;  //numlock on by default
 const char (*matrices[8])[numcols] = {
   noState, //0: no state, 0 bit
   numlkDefault, //1: numlk active, 1 bit
-  justShift, //2: shift active, 2 bit
-  numShift, //3: num + shift, 1 + 2 bit
-  justCap, //4: caps active, 4 bit
-  numCap, //5: num + caps, 1 + 4 bit
-  CapShift, //6: caps + shift, 2 + 5 bit
+  justCap, //2: caps active, 2 bit
+  numCap, //3: num + caps, 1 + 2 bit
+  justShift, //4: shift active, 4 bit
+  numShift, //5: num + shift, 1 + 5 bit
+  CapShift, //6: caps + shift, 2 + 4 bit
   numCapShift, //7: all states, all bits
 };
 

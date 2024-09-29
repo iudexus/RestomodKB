@@ -2,6 +2,8 @@
 
 void shiftHandler(const int shiftPin, uint16_t shiftKey) {
 
+  //activeMatrix |= shift //use bitwise 'or' statement to turn shift on
+
   while (analogRead(shiftPin) >= 990) {
     //begin scanning keys
 
@@ -22,7 +24,7 @@ void shiftHandler(const int shiftPin, uint16_t shiftKey) {
             Keyboard.write(newKey);  //send keypress to PC
             Keyboard.releaseAll();
             delay(180);  //immediate, extended debounce to avoid repeat
-            activeMatrix &= ~shift //use bitwise 'and not' statement to turn shift off for cleanup
+            //activeMatrix &= ~shift //use bitwise 'and not' statement to turn shift off for cleanup
             return; //start from the top
           }
         }
