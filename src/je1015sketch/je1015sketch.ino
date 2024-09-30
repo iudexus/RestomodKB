@@ -60,6 +60,7 @@ const char (*matrices[8])[numcols] = {
 #define KEY_DOWN_ARROW  217
 #define KEY_LEFT_ARROW  216
 #define KEY_RIGHT_ARROW  215
+#define KEY_KP_ENTER  224
 
 #define KEY_ESC  177
 #define KEY_F1  194
@@ -90,8 +91,19 @@ const char (*matrices[8])[numcols] = {
 */
 
 //Collom 11 (the last one) doesnt have all 8 characters, so representing empties w/ '\0' --normal state no caps numlk ON
-uint16_t keymap[numrows][numcols] = { //set variable type to uint16_t instead of char to hold values over 255
-  {'c', KEY_PERIOD, KEY_0, KEY_PRINTSCREEN, '\\', '.', 'm', 'b', 'z', KEY_F7, '\0'}, //0
+uint16_t noState[numrows][numcols] = { //set variable type to uint16_t instead of char to hold values over 255
+  {'c', KEY_DELETE, KEY_INSERT, KEY_PRINTSCREEN, '\\', '.', 'm', 'b', 'z', KEY_F7, '\0'}, //0
+  {'s', KEY_F12, KEY_END, '`', ';', 'k', 'h', 'f', KEY_LEFT_ALT, KEY_TAB, KEY_F5}, //1
+  {'x', KEY_KP_ENTER, KEY_5, KEY_RIGHT_SHIFT, '/', ',', 'n', 'v', KEY_CAPS_LOCK, KEY_LEFT_SHIFT, KEY_F6}, //2
+  {'d', KEY_PAGE_DOWN, KEY_DOWN_ARROW, KEY_RETURN, '\'', 'l', 'j', 'g', KEY_F10, 'a', KEY_F8}, //3
+  {'2', KEY_F11, KEY_NUM_LOCK, '=', '0', '8', '6', '4', KEY_F9, KEY_ESC, KEY_F1}, //4
+  {'w', KEY_PAGE_UP, KEY_HOME, ']', 'p', 'i', 'y', 'r', KEY_LEFT_CTRL, KEY_F3, '\0'}, //5
+  {'e', KEY_RIGHT_ARROW, KEY_LEFT_ARROW, ' ', '[', 'o', 'u', 't', 'q', KEY_F4, '\0'}, //6
+  {'3', KEYPAD_MINUS, KEY_UP_ARROW, KEY_BACKSPACE, '-', '9', '7', '5', '1', KEY_F2, '\0'} //7
+};
+
+uint16_t numlkDefault[numrows][numcols] = { //set variable type to uint16_t instead of char to hold values over 255
+  {'c', KEY_PERIOD, KEY_0, KEYPAD_ASTERIX, '\\', '.', 'm', 'b', 'z', KEY_F7, '\0'}, //0
   {'s', KEY_F12, KEY_1, '`', ';', 'k', 'h', 'f', KEY_LEFT_ALT, KEY_TAB, KEY_F5}, //1
   {'x', KEYPAD_PLUS, KEY_5, KEY_RIGHT_SHIFT, '/', ',', 'n', 'v', KEY_CAPS_LOCK, KEY_LEFT_SHIFT, KEY_F6}, //2
   {'d', KEY_3, KEY_2, KEY_RETURN, '\'', 'l', 'j', 'g', KEY_F10, 'a', KEY_F8}, //3
@@ -101,6 +113,7 @@ uint16_t keymap[numrows][numcols] = { //set variable type to uint16_t instead of
   {'3', KEYPAD_MINUS, KEY_8, KEY_BACKSPACE, '-', '9', '7', '5', '1', KEY_F2, '\0'} //7
 };
 
+/*
 uint16_t shiftkeymap[numrows][numcols] = { //createing a special case matrix to handle shift, capslk, and numlk OFF
   {'C', KEY_DELETE, KEY_INSERT, KEYPAD_ASTERIX, '|', '>', 'M', 'B', 'Z', KEY_F7, '\0'}, //0
   {'S', KEY_F12, KEY_END, '~', ':', 'K', 'H', 'F', KEY_LEFT_ALT, KEY_TAB, KEY_F5}, //1
@@ -111,15 +124,27 @@ uint16_t shiftkeymap[numrows][numcols] = { //createing a special case matrix to 
   {'E', KEY_RIGHT_ARROW, KEY_LEFT_ARROW, ' ', '{', 'O', 'U', 'T', 'Q', KEY_F4, '\0'}, //6
   {'#', KEYPAD_MINUS, KEY_UP_ARROW, KEY_BACKSPACE, '_', '(', '&', '%', '!', KEY_F2, '\0'} //7
 };
+*/
 
-uint16_t capskeymap[numrows][numcols] = { //set variable type to uint16_t instead of char to hold values over 255
-  {'c', KEY_PERIOD, KEY_0, KEY_PRINTSCREEN, '\\', '.', 'm', 'b', 'z', KEY_F7, '\0'}, //0
-  {'s', KEY_F12, KEY_1, '`', ';', 'k', 'h', 'f', KEY_LEFT_ALT, KEY_TAB, KEY_F5}, //1
-  {'x', KEYPAD_PLUS, KEY_5, KEY_RIGHT_SHIFT, '/', ',', 'n', 'v', KEY_CAPS_LOCK, KEY_LEFT_SHIFT, KEY_F6}, //2
-  {'d', KEY_3, KEY_2, KEY_RETURN, '\'', 'l', 'j', 'g', KEY_F10, 'a', KEY_F8}, //3
+uint16_t justCap[numrows][numcols] = { //set variable type to uint16_t instead of char to hold values over 255
+  {'C', KEY_DELETE, KEY_INSERT, KEY_PRINTSCREEN, '\\', '.', 'M', 'B', 'Z', KEY_F7, '\0'}, //0
+  {'S', KEY_F12, KEY_END, '`', ';', 'K', 'H', 'F', KEY_LEFT_ALT, KEY_TAB, KEY_F5}, //1
+  {'X', KEY_KP_ENTER, KEY_5, KEY_RIGHT_SHIFT, '/', ',', 'N', 'V', KEY_CAPS_LOCK, KEY_LEFT_SHIFT, KEY_F6}, //2
+  {'B', KEY_PAGE_DOWN, KEY_DOWN_ARROW, KEY_RETURN, '\'', 'L', 'J', 'G', KEY_F10, 'A', KEY_F8}, //3
   {'2', KEY_F11, KEY_NUM_LOCK, '=', '0', '8', '6', '4', KEY_F9, KEY_ESC, KEY_F1}, //4
-  {'w', KEY_9, KEY_7, ']', 'p', 'i', 'y', 'r', KEY_LEFT_CTRL, KEY_F3, '\0'}, //5
-  {'e', KEY_6, KEY_4, ' ', '[', 'o', 'u', 't', 'q', KEY_F4, '\0'}, //6
+  {'W', KEY_PAGE_UP, KEY_HOME, ']', 'P', 'I', 'Y', 'R', KEY_LEFT_CTRL, KEY_F3, '\0'}, //5
+  {'E', KEY_RIGHT_ARROW, KEY_LEFT_ARROW, ' ', '[', 'O', 'U', 'T', 'Q', KEY_F4, '\0'}, //6
+  {'3', KEYPAD_MINUS, KEY_UP_ARROW, KEY_BACKSPACE, '-', '9', '7', '5', '1', KEY_F2, '\0'} //7
+};
+
+uint16_t numCap[numrows][numcols] = { //set variable type to uint16_t instead of char to hold values over 255
+  {'C', KEY_PERIOD, KEY_0, KEY_PRINTSCREEN, '\\', '.', 'M', 'B', 'Z', KEY_F7, '\0'}, //0
+  {'S', KEY_F12, KEY_1, '`', ';', 'K', 'H', 'F', KEY_LEFT_ALT, KEY_TAB, KEY_F5}, //1
+  {'X', KEY_KP_ENTER, KEY_5, KEY_RIGHT_SHIFT, '/', ',', 'N', 'V', KEY_CAPS_LOCK, KEY_LEFT_SHIFT, KEY_F6}, //2
+  {'D', KEY_3, KEY_2, KEY_RETURN, '\'', 'L', 'J', 'G', KEY_F10, 'A', KEY_F8}, //3
+  {'2', KEY_F11, KEY_NUM_LOCK, '=', '0', '8', '6', '4', KEY_F9, KEY_ESC, KEY_F1}, //4
+  {'W', KEY_9, KEY_7, ']', 'P', 'I', 'Y', 'R', KEY_LEFT_CTRL, KEY_F3, '\0'}, //5
+  {'E', KEY_6, KEY_4, ' ', '[', 'O', 'U', 'T', 'Q', KEY_F4, '\0'}, //6
   {'3', KEYPAD_MINUS, KEY_8, KEY_BACKSPACE, '-', '9', '7', '5', '1', KEY_F2, '\0'} //7
 };
 
@@ -142,6 +167,19 @@ void setup() {
   }
   //delay to not immediately jump into opperation
   delay(2000);
+
+  //LED pin setup - this board requires holding LED voltage high, then "sinking" to GND
+  pinMode(22, OUTPUT) //power pin
+  digitalWrite(22, HIGH) //5v out
+  //initialize scrlk LED
+  pinMode(24, OUTPUT) //scrlk sink pin
+  digitalWrite(24, HIGH) //5v out to back of diode
+  //initialize capslk LED
+  pinMode(10, OUTPUT) //caplk sink pin
+  digitalWrite(10, HIGH) //5v out to back of diode
+  //initialize numlk LED
+  pinMode(9, OUTPUT) //numlk sink pin
+  digitalWrite(9, HIGH) //5v out to back of diode
 }
 
 void loop() {

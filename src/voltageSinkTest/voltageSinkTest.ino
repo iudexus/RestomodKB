@@ -27,7 +27,7 @@ void setup() {
   digitalWrite(ledPin, HIGH);
   // initialize the pushbutton pin as an input starting high since it's wired to gnd.
   pinMode(buttonPin, INPUT_PULLUP);
-  //initialize the sink pin as in
+  //initialize the sink pin
   pinMode(sinkPin, OUTPUT);
   //set sink pin high (the LED is a diode, so there is no risk. 
   digitalWrite(sinkPin, HIGH);
