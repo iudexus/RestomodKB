@@ -25,7 +25,7 @@ void shiftHandler(const int shiftPin, uint16_t shiftKey) {
             Keyboard.releaseAll();
             delay(180);  //immediate, extended debounce to avoid repeat
             //activeMatrix &= ~shift //use bitwise 'and not' statement to turn shift off for cleanup
-            return; //start from the top
+            return; //start from the top incase shift held down
           }
         }
       }

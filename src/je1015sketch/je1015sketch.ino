@@ -164,6 +164,7 @@ void loop() {
         }
         else if (key == KEY_LEFT_SHIFT || key == KEY_RIGHT_SHIFT) {
           siftHandler(col, key); //pass in the active shift pin to listen for release
+          return;
         }
         else if (key == KEY_LEFT_ALT || key == KEY_LEFT_CTRL) {
           comboHandler(key) //pass in the combo trigger to start combo cycle
