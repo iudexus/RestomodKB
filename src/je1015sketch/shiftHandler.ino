@@ -19,13 +19,15 @@ void shiftHandler(const int shiftPin, uint16_t shiftKey) {
         
         //correspond where key is pressed at row and col in the active matrix
         uint16_t newKey = matrices[activeMatrix][row][col]; //variable type set to uint16_t to hold macros - treat as char
-          if (newKey != '\0') { //check for null character
+          if (newKey == KEY_LEFT_ALT) {
+            comboHandler(newKey)
+          }
+          else if (newKey != '\0') { //check for null character
             Keyboard.press(shiftKey);
             Keyboard.write(newKey);  //send keypress to PC
             Keyboard.releaseAll();
             delay(180);  //immediate, extended debounce to avoid repeat
             //activeMatrix &= ~shift //use bitwise 'and not' statement to turn shift off for cleanup
-            return; //start from the top incase shift held down
           }
         }
       }
