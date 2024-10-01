@@ -2,6 +2,8 @@
 
 void comboHandler(uint16_t triggerKey) {
 
+//if slt trigger + shift in, return Lgui, then flow throught he combo logic, setting trigger key to Lgui
+
   //combo handler listens for the next strike just like shift
   //this part will also need an alt-checker that sends windows L UI key if shift is pressed immediately after alt
   //there's a reference in shiftHandler directing to this function, but only passinf Lalt, which should cause an immediate shift detection after landing here and send the UI key reliably as intended. (lol)

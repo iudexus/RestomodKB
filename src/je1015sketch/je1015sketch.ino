@@ -241,4 +241,3 @@ void loop() {
   digitalWrite(10, HIGH) //5v out to back of diode for caps
   }
 }
-// Add LED handling here!!! 
