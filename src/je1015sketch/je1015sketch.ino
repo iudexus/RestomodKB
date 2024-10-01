@@ -224,5 +224,21 @@ void loop() {
       }
     }
   }
+  if (activeMatrix == 1) {
+      digitalWrite(9, LOW) //GND this pin to pull voltage across numlk LED
+      digitalWrite(10, HIGH) //5v out to back of diode for caps
+  }
+  else if (activeMatrix == 2) {
+    digitalWrite(9, HIGH) //5v out to back of diode for num
+    digitalWrite(10, LOW) //GND this pin to pull voltage across capslk LED
+  }
+  else if (activeMatrix == 3) {
+    digitalWrite(9, LOW) //GND this pin to pull voltage across numlk LED
+    digitalWrite(10, LOW) //GND this pin to pull voltage across capslk LED
+  }
+  else {
+  digitalWrite(9, HIGH) //5v out to back of diode for num
+  digitalWrite(10, HIGH) //5v out to back of diode for caps
+  }
 }
 // Add LED handling here!!! 
