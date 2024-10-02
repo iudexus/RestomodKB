@@ -20,7 +20,8 @@ void shiftHandler(const int shiftPin, uint16_t shiftKey) {
         //correspond where key is pressed at row and col in the active matrix
         uint16_t newKey = matrices[activeMatrix][row][col]; //variable type set to uint16_t to hold macros - treat as char
           if (newKey == KEY_LEFT_ALT) {
-            comboHandler(newKey)
+            comboHandler(col, newKey);
+            break;
           }
           else if (newKey != '\0') { //check for null character
             Keyboard.press(shiftKey);
@@ -32,5 +33,9 @@ void shiftHandler(const int shiftPin, uint16_t shiftKey) {
         }
       }
     }
+  }
+  //CLEANUP: set rowpins low using dumb logic -- optimize later
+  for (int row = 0; row < numrows; row++) {
+  digitalWrite(rowpins[row], LOW);
   }
 }

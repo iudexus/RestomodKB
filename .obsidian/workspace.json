@@ -148,6 +148,8 @@
   },
   "active": "746dbc25cf1a9fb6",
   "lastOpenFiles": [
+    "src/je1015sketch/guiBlaster.ino",
+    "Keyboard JE87 spreadsheet.xlsx",
     "je1015sketch/je1015sketch.ino",
     "je1015sketch/je1015sketch/KeyboardSerial.txt",
     "je1015sketch/je1015sketch/je1015sketch.ino",
@@ -157,8 +159,6 @@
     "je1015sketch/comboHandler.ino",
     "je1015sketch/shiftHandler.ino",
     "je1015sketch/getActiveMatrix.ino",
-    "je1015sketch/src.ino",
-    "je1015sketch/KeyboardSerial.txt",
     "Photos/spreadsheet.jpg",
     "Photos/midi.jpg",
     "Photos/ic.jpg",

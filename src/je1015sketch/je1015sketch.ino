@@ -19,18 +19,6 @@ const int colpins[numcols] = {A0,A1,A2,A3,A4,A5,A6,A7,A8,A9,A10};
 //this modifier's state will index which of the following keymaps to get
 byte activeMatrix = 1;  //numlock on by default
 
-//this array lists the states of the keyboard given current modifier in order to read from state bit. 
-const char (*matrices[8])[numcols] = {
-  noState, //0: no state, 0 bit
-  numlkDefault, //1: numlk active, 1 bit
-  justCap, //2: caps active, 2 bit
-  numCap, //3: num + caps, 1 + 2 bit
-  justShift, //4: shift active, 4 bit
-  numShift, //5: num + shift, 1 + 5 bit
-  CapShift, //6: caps + shift, 2 + 4 bit
-  numCapShift, //7: all states, all bits
-};
-
 /*
 
 //manually define macros as variables with decimal values
@@ -148,6 +136,20 @@ uint16_t numCap[numrows][numcols] = { //set variable type to uint16_t instead of
   {'3', KEYPAD_MINUS, KEY_8, KEY_BACKSPACE, '-', '9', '7', '5', '1', KEY_F2, '\0'} //7
 };
 
+//this array lists the states of the keyboard given current modifier in order to read from state bit. 
+const char (*matrices[4])[numcols] = {
+  noState, //0: no state, 0 bit
+  numlkDefault, //1: numlk active, 1 bit
+  justCap, //2: caps active, 2 bit
+  numCap, //3: num + caps, 1 + 2 bit
+  };
+  //justShift, //4: shift active, 4 bit
+  //numShift, //5: num + shift, 1 + 5 bit
+  //capShift, //6: caps + shift, 2 + 4 bit
+  //numCapShift, //7: all states, all bits
+
+
+
 void setup() {
   //initialize keyboard control
   Keyboard.begin();
@@ -169,17 +171,17 @@ void setup() {
   delay(2000);
 
   //LED pin setup - this board requires holding LED voltage high, then "sinking" to GND
-  pinMode(22, OUTPUT) //power pin
-  digitalWrite(22, HIGH) //5v out
+  pinMode(22, OUTPUT); //power pin
+  digitalWrite(22, HIGH); //5v out
   //initialize scrlk LED
-  pinMode(24, OUTPUT) //scrlk sink pin
-  digitalWrite(24, HIGH) //5v out to back of diode
+  pinMode(24, OUTPUT); //scrlk sink pin
+  digitalWrite(24, HIGH); //5v out to back of diode
   //initialize capslk LED
-  pinMode(10, OUTPUT) //caplk sink pin
-  digitalWrite(10, HIGH) //5v out to back of diode
+  pinMode(10, OUTPUT); //caplk sink pin
+  digitalWrite(10, HIGH); //5v out to back of diode
   //initialize numlk LED
-  pinMode(9, OUTPUT) //numlk sink pin
-  digitalWrite(9, HIGH) //5v out to back of diode
+  pinMode(9, OUTPUT); //numlk sink pin
+  digitalWrite(9, HIGH); //5v out to back of diode
 }
 
 void loop() {
@@ -205,9 +207,10 @@ void loop() {
           return;
         }
         else if (key == KEY_LEFT_ALT || key == KEY_LEFT_CTRL) {
-          comboHandler(key) //pass in the combo trigger to start combo cycle
+          comboHandler(col, key); //pass in the combo trigger to start combo cycle
+          return;
         }
-        else if (key != '/0') { //check for null character
+        else if (key != '\0') { //check for null character
           Keyboard.write(key);  //send keypress to PC
         }
         digitalWrite(rowpins[row], LOW); //clean up immediately after sending data
