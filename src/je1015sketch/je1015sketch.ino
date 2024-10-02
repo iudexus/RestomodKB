@@ -12,7 +12,7 @@ const int colpins[numcols] = {A0,A1,A2,A3,A4,A5,A6,A7,A8,A9,A10};
 
 //define bitwise indicators for selecting active keymap for typing - note to self: |=, or, turns on through addition : &= ~, and not, turns off by specifying : ^=, xor, toggles with exclusion
 #define numlk 0x01 //bit 0
-#define caps 0x02 //bit 1
+#define capslk 0x02 //bit 1
 #define shift 0x04 //bit 2
 //shift nolonger defines this bit, instead allowing the computer to handle shift cases to make capslk interaction easier - 2am revelation
 
@@ -82,7 +82,7 @@ byte activeMatrix = 1;  //numlock on by default
 uint16_t noState[numrows][numcols] = { //set variable type to uint16_t instead of char to hold values over 255
   {'c', KEY_DELETE, KEY_INSERT, KEY_PRINTSCREEN, '\\', '.', 'm', 'b', 'z', KEY_F7, '\0'}, //0
   {'s', KEY_F12, KEY_END, '`', ';', 'k', 'h', 'f', KEY_LEFT_ALT, KEY_TAB, KEY_F5}, //1
-  {'x', KEY_KP_ENTER, KEY_5, KEY_RIGHT_SHIFT, '/', ',', 'n', 'v', KEY_CAPS_LOCK, KEY_LEFT_SHIFT, KEY_F6}, //2
+  {'x', KEYPAD_ENTER, KEY_5, KEY_RIGHT_SHIFT, '/', ',', 'n', 'v', KEY_CAPS_LOCK, KEY_LEFT_SHIFT, KEY_F6}, //2
   {'d', KEY_PAGE_DOWN, KEY_DOWN_ARROW, KEY_RETURN, '\'', 'l', 'j', 'g', KEY_F10, 'a', KEY_F8}, //3
   {'2', KEY_F11, KEY_NUM_LOCK, '=', '0', '8', '6', '4', KEY_F9, KEY_ESC, KEY_F1}, //4
   {'w', KEY_PAGE_UP, KEY_HOME, ']', 'p', 'i', 'y', 'r', KEY_LEFT_CTRL, KEY_F3, '\0'}, //5
@@ -117,7 +117,7 @@ uint16_t shiftkeymap[numrows][numcols] = { //createing a special case matrix to 
 uint16_t justCap[numrows][numcols] = { //set variable type to uint16_t instead of char to hold values over 255
   {'C', KEY_DELETE, KEY_INSERT, KEY_PRINTSCREEN, '\\', '.', 'M', 'B', 'Z', KEY_F7, '\0'}, //0
   {'S', KEY_F12, KEY_END, '`', ';', 'K', 'H', 'F', KEY_LEFT_ALT, KEY_TAB, KEY_F5}, //1
-  {'X', KEY_KP_ENTER, KEY_5, KEY_RIGHT_SHIFT, '/', ',', 'N', 'V', KEY_CAPS_LOCK, KEY_LEFT_SHIFT, KEY_F6}, //2
+  {'X', KEYPAD_ENTER, KEY_5, KEY_RIGHT_SHIFT, '/', ',', 'N', 'V', KEY_CAPS_LOCK, KEY_LEFT_SHIFT, KEY_F6}, //2
   {'B', KEY_PAGE_DOWN, KEY_DOWN_ARROW, KEY_RETURN, '\'', 'L', 'J', 'G', KEY_F10, 'A', KEY_F8}, //3
   {'2', KEY_F11, KEY_NUM_LOCK, '=', '0', '8', '6', '4', KEY_F9, KEY_ESC, KEY_F1}, //4
   {'W', KEY_PAGE_UP, KEY_HOME, ']', 'P', 'I', 'Y', 'R', KEY_LEFT_CTRL, KEY_F3, '\0'}, //5
@@ -128,7 +128,7 @@ uint16_t justCap[numrows][numcols] = { //set variable type to uint16_t instead o
 uint16_t numCap[numrows][numcols] = { //set variable type to uint16_t instead of char to hold values over 255
   {'C', KEY_PERIOD, KEY_0, KEY_PRINTSCREEN, '\\', '.', 'M', 'B', 'Z', KEY_F7, '\0'}, //0
   {'S', KEY_F12, KEY_1, '`', ';', 'K', 'H', 'F', KEY_LEFT_ALT, KEY_TAB, KEY_F5}, //1
-  {'X', KEY_KP_ENTER, KEY_5, KEY_RIGHT_SHIFT, '/', ',', 'N', 'V', KEY_CAPS_LOCK, KEY_LEFT_SHIFT, KEY_F6}, //2
+  {'X', KEYPAD_PLUS, KEY_5, KEY_RIGHT_SHIFT, '/', ',', 'N', 'V', KEY_CAPS_LOCK, KEY_LEFT_SHIFT, KEY_F6}, //2
   {'D', KEY_3, KEY_2, KEY_RETURN, '\'', 'L', 'J', 'G', KEY_F10, 'A', KEY_F8}, //3
   {'2', KEY_F11, KEY_NUM_LOCK, '=', '0', '8', '6', '4', KEY_F9, KEY_ESC, KEY_F1}, //4
   {'W', KEY_9, KEY_7, ']', 'P', 'I', 'Y', 'R', KEY_LEFT_CTRL, KEY_F3, '\0'}, //5
@@ -137,12 +137,12 @@ uint16_t numCap[numrows][numcols] = { //set variable type to uint16_t instead of
 };
 
 //this array lists the states of the keyboard given current modifier in order to read from state bit. 
-const char (*matrices[4])[numcols] = {
+uint16_t (*matrices[4])[numcols] = {
   noState, //0: no state, 0 bit
   numlkDefault, //1: numlk active, 1 bit
   justCap, //2: caps active, 2 bit
   numCap, //3: num + caps, 1 + 2 bit
-  };
+};
   //justShift, //4: shift active, 4 bit
   //numShift, //5: num + shift, 1 + 5 bit
   //capShift, //6: caps + shift, 2 + 4 bit
@@ -203,7 +203,7 @@ void loop() {
           numCapsChanger(key); //pass in modifier key to the function
         }
         else if (key == KEY_LEFT_SHIFT || key == KEY_RIGHT_SHIFT) {
-          siftHandler(col, key); //pass in the active shift pin to listen for release
+          shiftHandler(col, key); //pass in the active shift pin to listen for release
           return;
         }
         else if (key == KEY_LEFT_ALT || key == KEY_LEFT_CTRL) {
@@ -227,5 +227,20 @@ void loop() {
       }
     }
   }
+  if (activeMatrix == 1) {
+      digitalWrite(9, LOW); //GND this pin to pull voltage across numlk LED
+      digitalWrite(10, HIGH); //5v out to back of diode for caps
+  }
+  else if (activeMatrix == 2) {
+    digitalWrite(9, HIGH); //5v out to back of diode for num
+    digitalWrite(10, LOW); //GND this pin to pull voltage across capslk LED
+  }
+  else if (activeMatrix == 3) {
+    digitalWrite(9, LOW); //GND this pin to pull voltage across numlk LED
+    digitalWrite(10, LOW); //GND this pin to pull voltage across capslk LED
+  }
+  else {
+  digitalWrite(9, HIGH); //5v out to back of diode for num
+  digitalWrite(10, HIGH); //5v out to back of diode for caps
+  }
 }
-// Add LED handling here!!! 

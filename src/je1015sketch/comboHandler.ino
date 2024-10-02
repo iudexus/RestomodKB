@@ -20,7 +20,7 @@ void comboHandler(const int col1, uint16_t key1) {
             guiBlaster(KEY_LEFT_GUI); //hand off to send/process Windows/Command key
             break;
           }
-          else while (analogRead(col2) >= 990) { //get 3rd key
+          while (analogRead(col2) >= 990) { //get 3rd key
 
             //begin scanning keys again for THIRD key in combo
             for (int row = 0; row < numrows; row++) {
@@ -44,7 +44,7 @@ void comboHandler(const int col1, uint16_t key1) {
               }
             }
           }
-          else if (key2 != '\0' && sent != true) { //check for null character
+          if (key2 != '\0' && sent != true) { //check for null character
             Keyboard.press(key1);
             Keyboard.write(key2);  //send keypress to PC
             Keyboard.releaseAll();
@@ -60,9 +60,3 @@ void comboHandler(const int col1, uint16_t key1) {
   sent = false;
   }
 }
-
-  //there's a reference in shiftHandler directing to this function, but only passinf Lalt, which should cause an immediate shift detection after landing here and send the UI key reliably as intended. (lol)
-
-  //there is a delay and combo handler blinks the scrlk LED twice rapidly, then sends the command
-  //the combo handler will wait for a 3rd  key in combo by running a while loop with delay indicated in the LED - so nested while loops to store the pins and scan other collumns
-

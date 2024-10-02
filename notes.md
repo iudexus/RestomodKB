@@ -85,3 +85,5 @@ Here's an Idea!  Since I dont have a windows key, have ALT+shift = r_gui, then h
 The next big things are the above key combo handler, LED logic with voltage sinking (1 pin pullup, 3 pins high), and actually writing out the key matrices since that'll be time consuming.  Then wiring! 
 
 LEDS pins 9, 10 and 24 - 5v from 23
+
+keyboard lib troubleshooting: [Teensyduino: Using USB Keyboard with Teensy on the Arduino IDE (pjrc.com)](https://www.pjrc.com/teensy/td_keyboard.html#:~:text=There%20are%20two%20ways%20you%20can%20make%20your)
